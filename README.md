@@ -1,2 +1,2 @@
 # Alien Invasion Game using Python/Pygame
-## currently building the background, ned to set boundaries and add bullets element
+## currently building the background, need to set boundaries on the spaceship and add bullets feature 
