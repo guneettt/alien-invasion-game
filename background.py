@@ -30,22 +30,23 @@ class Bullet:
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.bottom = y
-        self.speed = 7
+        self.speed = 3
 
     def update(self):
         self.rect.y -= self.speed
-        if self.rect.bottom < 0:
-            return False
-        return True
+    
     def draw(self, surface):
         surface.blit(self.image, self.rect)
 
 # create a list to hold bullets
 bullets = []
-
+bullet_cooldown = 250
+last_bullet_time = 0
+ship_x = float(ship_rect.x)
 # main function to display the background
 running = True
 while running:
+    current_time = pygame.time.get_ticks()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -53,12 +54,16 @@ while running:
     # character movement
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        ship_rect.x -= 1
-        bullets.append(Bullet(ship_rect.centerx, ship_rect.top)) # for shooting the bullets automatically 
+        ship_x -= 1
+        if current_time - last_bullet_time > bullet_cooldown:
+            bullets.append(Bullet(ship_rect.centerx, ship_rect.top)) # for shooting the bullets automatically
+            last_bullet_time = current_time
     if keys[pygame.K_RIGHT]:
-        ship_rect.x += 1
-        bullets.append(Bullet(ship_rect.centerx, ship_rect.top))
-
+        ship_x += 1
+        if current_time - last_bullet_time > bullet_cooldown:
+            bullets.append(Bullet(ship_rect.centerx, ship_rect.top)) # for shooting the bullets automatically
+            last_bullet_time = current_time
+    ship_rect.x = int(ship_x)
     for bullet in bullets[:]:
         bullet.update()
         if bullet.rect.bottom < 0: #offscreen
